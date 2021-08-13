@@ -3,54 +3,46 @@
 namespace App\Controllers;
 
 use App\Helpers\Error;
+use App\Helpers\PrepareDataCostsServices;
 use App\Model\Cost;
 use App\ConnectDB;
 
 class HomeController
 {
-    private $costs;
-    private $comings;
-
     public function __construct()
     {
         if (empty($_SESSION['user_name'])) {
             redirect(url('login'));
         }
-
-        $database = new ConnectDB();
-        $this->costs = new Cost($database->getConnection());
     }
 
     public function index()
     {
-        $costs = $this->costs->getAll();
-        $comings = $this->comings->getAll();
+        list($lastTen, $incomes, $costs, $difference) = (new PrepareDataCostsServices())->getData();
 
         require_once __DIR__ . "/../Views/index.php";
     }
 
-    /*public function show($id = null)
+    public function store()
     {
-        $post = $this->post->first($id);
+        $service = new PrepareDataCostsServices();
 
-        if (!$post) {
-            Error::show();
+        if (!$service->create(input()->all())) {
+            return response()->json([
+                'success' => false,
+            ]);
         }
 
-        require_once __DIR__ . "/../Views/show.php";
+        list($lastTen, $incomes, $costs, $difference) = $service->getData();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'lastTen' => $lastTen,
+                'incomes' => $incomes,
+                'costs' => $costs,
+                'difference' => $difference
+            ]
+        ]);
     }
-
-    public function postsList()
-    {
-        $posts = $this->post->getAll();
-
-        require_once __DIR__ . "/../Views/list.php";
-    }
-
-    public function search()
-    {
-        $posts = $this->post->search(input('search'));
-
-        require_once __DIR__ . "/../Views/index.php";
-    }*/
 }

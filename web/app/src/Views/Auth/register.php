@@ -7,11 +7,23 @@ include __DIR__ . "/../Layouts/navbar.php";
             <input type="hidden" name="csrf_token" value="<?= csrf_token(); ?>">
             <div class="mb-3">
                 <label for="reg_name" class="form-label">Name</label>
-                <input type="name" minlength="3" class="form-control" id="reg_name" aria-describedby="emailName" name="name" required>
+                <input type="name" minlength="3" class="form-control" id="reg_name" aria-describedby="emailName" name="name"
+                       value="<?php
+                       if (isset($_SESSION['old']['name'])) {
+                           echo $_SESSION['old']['name'];
+                           unset($_SESSION['old']['name']);
+                       }
+                       ?>" required>
             </div>
             <div class="mb-3">
                 <label for="reg_email" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="reg_email" aria-describedby="emailHelp" name="email" required>
+                <input type="email" class="form-control" id="reg_email" aria-describedby="emailHelp" name="email"
+                       value="<?php
+                       if (isset($_SESSION['old']['email'])) {
+                           echo $_SESSION['old']['email'];
+                           unset($_SESSION['old']['email']);
+                       }
+                       ?>" required>
                 <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
             </div>
             <div class="mb-3">

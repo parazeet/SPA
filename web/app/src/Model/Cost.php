@@ -15,33 +15,32 @@ class Cost
         $this->created_at = $this->updated_at = date('Y-m-d H:i:s');
     }
 
-    public function getAll() {
-        $stmt = $this->conn->prepare("SELECT * FROM " . $this->table_name . " ORDER BY created_at DESC");
-        $stmt->execute();
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    public function getMyPosts($userId) {
-        $stmt = $this->conn->prepare("SELECT * FROM " . $this->table_name . " WHERE user_id = :user_id");
-        $stmt->execute(['user_id' => $userId]);
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    public function first($id) {
-        $stmt = $this->conn->prepare("SELECT * FROM " . $this->table_name . " WHERE id = :id");
-        $stmt->execute(['id' => $id]);
+    public function getAllCosts() {
+        $stmt = $this->conn->prepare("SELECT SUM(sum) as 'sum' FROM " . $this->table_name . " 
+            WHERE 
+                user_id = :user_id AND type = 'costs'
+            GROUP BY 'sum'");
+        $stmt->execute(['user_id' => $_SESSION['id']]);
 
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function search($search) {
-        $query = "SELECT * FROM " . $this->table_name . " 
-            WHERE title LIKE :search OR body LIKE :search
-            ORDER BY created_at DESC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([":search" => '%' . $search . '%']);
+    public function getAllIncomes() {
+        $stmt = $this->conn->prepare("SELECT SUM(sum) as 'sum' FROM " . $this->table_name . " 
+            WHERE 
+                user_id = :user_id AND type = 'income'
+            GROUP BY 'sum'");
+        $stmt->execute(['user_id' => $_SESSION['id']]);
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function getLastTen() {
+        $stmt = $this->conn->prepare("SELECT * FROM " . $this->table_name . " 
+            WHERE user_id = :user_id
+            ORDER BY created_at DESC
+            LIMIT 10");
+        $stmt->execute(['user_id' => $_SESSION['id']]);
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -51,15 +50,15 @@ class Cost
         $query = "INSERT INTO
                     " . $this->table_name . "
                 SET
-                    user_id=:user_id, title=:title, body=:body, img=:img, created_at=:created_at";
+                    user_id=:user_id, sum=:sum, type=:type, comment=:comment, created_at=:created_at";
 
         $stmt = $this->conn->prepare($query);
 
         if ($stmt->execute([
             ":user_id" => $_SESSION['id'],
-            ":title" => $data['title'],
-            ":body" => $data['body'],
-            ":img" => $data['img'],
+            ":sum" => $data['sum'],
+            ":type" => $data['type'],
+            ":comment" => $data['comment'],
             ":created_at" => $this->created_at
         ])) {
             return true;
@@ -70,21 +69,7 @@ class Cost
 
     function update($id, $data)
     {
-        $query = "UPDATE " . $this->table_name . " 
-            SET title= :title, body= :body, img= :img, updated_at= :updated_at
-            WHERE id= :id AND user_id= :user_id";
-
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute([
-            ":id" => $id,
-            ":title" => $data['title'],
-            ":user_id" => $_SESSION['id'],
-            ":body" => $data['body'],
-            ":img" => $data['img'],
-            ":updated_at" => $this->updated_at
-        ]);
-
-        if($stmt){
+        if(false){
             return true;
         } else {
             return false;
@@ -93,15 +78,7 @@ class Cost
 
     function delete($id)
     {
-        $query = "DELETE FROM " . $this->table_name . " WHERE id= :id AND user_id= :user_id";
-
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute(array(
-            ":id" => $id,
-            ":user_id" => $_SESSION['id']
-        ));
-
-        if($stmt){
+        if(false){
             return true;
         } else {
             return false;

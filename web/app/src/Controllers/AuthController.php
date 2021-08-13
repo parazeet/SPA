@@ -29,6 +29,7 @@ class AuthController
 
         if (!$user or !password_verify(input('password'), $user['password'])) {
             $_SESSION["errors"] = 'email или пароль указан не верно';
+            $_SESSION["old"]["email"] = input('email');
 
             return response()->redirect(url('login'));
         }
@@ -101,6 +102,11 @@ class AuthController
 
         if ($this->user->find($request['email'])) {
             $_SESSION["errors"][] = 'Данный email уже зарегестрирован';
+        }
+
+        if (isset($_SESSION["errors"])) {
+            $_SESSION["old"]['name'] = $request['name'];
+            $_SESSION["old"]['email'] = $request['email'];
         }
 
         return isset($_SESSION["errors"]);
