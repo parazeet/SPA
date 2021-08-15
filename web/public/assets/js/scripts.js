@@ -59,15 +59,20 @@ $(document).ready(function () {
                 });
 
                 $('#table').html(trHTML);
-                $('#incomeAll').html(response.data.incomes.sum);
-                $('#costsAll').html(response.data.costs.sum);
+                $('#incomeAll').html(response.data.incomes);
+                $('#costsAll').html(response.data.costs);
                 $('#difference').html(response.data.difference);
 
                 $('#sum').val('');
                 $('#type').val('');
                 $('#comment').val('');
+            } else if (response['validation']) {
+                alert(
+                    "Ошибки валидации: \n" +
+                    response['validation'].join('\n')
+                );
             } else {
-                alert('Не удалось сохранить!');
+                alert('Не удалось сохранить')
             }
         }, 'post', data)
     });

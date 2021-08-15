@@ -19,10 +19,15 @@ class PrepareDataCostsServices
 
     public function getData()
     {
-        $lastTen = $this->costs->getLastTen() ?? null;
-        $incomes = $this->costs->getAllIncomes() ?? 0;
-        $costs = $this->costs->getAllCosts() ?? 0;
-        $difference = $incomes['sum'] - $costs['sum'];
+        try {
+            $lastTen = $this->costs->getLastTen();
+            $incomes = $this->costs->getAllIncomes() ? $this->costs->getAllIncomes() : 0;
+            $costs = $this->costs->getAllCosts() ? $this->costs->getAllCosts() : 0;
+            $difference = $incomes - $costs;
+        } catch(\PDOException $exception) {
+            echo "Error: " . $exception->getMessage();
+            exit;
+        }
 
         return [$lastTen, $incomes, $costs, $difference];
     }

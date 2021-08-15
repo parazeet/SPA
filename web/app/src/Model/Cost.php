@@ -22,7 +22,7 @@ class Cost
             GROUP BY 'sum'");
         $stmt->execute(['user_id' => $_SESSION['id']]);
 
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $stmt->fetchColumn();
     }
 
     public function getAllIncomes() {
@@ -32,7 +32,7 @@ class Cost
             GROUP BY 'sum'");
         $stmt->execute(['user_id' => $_SESSION['id']]);
 
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $stmt->fetchColumn();
     }
 
     public function getLastTen() {

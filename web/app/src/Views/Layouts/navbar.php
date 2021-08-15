@@ -10,7 +10,6 @@
             $logout = url('logout');
             if(isset($_SESSION['user_name'])) {
                 echo "<ul class=\"nav col-12 col-md-auto mb-2 justify-content-center mb-md-0\">
-                        <li><a href=\"{$home}\" class=\"nav-link px-2 link-secondary\">Home</a></li>
                         <li class=\"nav-item dropdown\">
                             <a class=\"nav-link link-secondary dropdown-toggle\" href=\"#\" id=\"navbarDropdown\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">
                             {$_SESSION['user_name']}
