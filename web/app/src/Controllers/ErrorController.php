@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Controllers;
 
-class Error
+class ErrorController
 {
     public static function show()
     {
